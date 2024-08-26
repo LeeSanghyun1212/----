@@ -1,4 +1,5 @@
 // 실행방법
+
 파일을 실행 후 터미널을 열어 node server.js 입력 시 
 ![image](https://github.com/user-attachments/assets/f1547c2e-f63e-4606-81be-b09d4412fdb5)
 
