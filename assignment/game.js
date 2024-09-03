@@ -59,7 +59,7 @@ function playerDead(player) {
 
         if (choice === '1') {
             console.clear();
-            startGame(); // 게임을 다시 시작
+            resetGame(); // 게임을 다시 시작
         } else if (choice === '2') {
             console.clear();
             displayLobby(); // 로비 화면으로 돌아가기
@@ -201,17 +201,27 @@ const battle = async (stage, player, monster) => {
 
 };
 
-export async function startGame() {
-    console.clear();
-    let stage = 1;
+let stage;
 
+function initializeStage() {
+    console.clear();
+    stage = 1; // 게임의 스테이지를 1로 초기화
+}
+
+function resetGame() {
+    initializeStage(); // 상태를 초기화하고
+    startGame(); // 게임을 처음부터 다시 시작
+}
+
+export async function startGame() {
     const player = new Player(stage);
     while (stage <= 10) {
         const monster = new Monster(stage);
         await battle(stage, player, monster);
-        player.hp = 100 + stage * 10;
-        // 스테이지 클리어 및 게임 종료 조건
-        stage++;
+        if (player.hp > 0) {  // 플레이어가 살아남은 경우에만 다음 스테이지로 이동
+            stage++;  // 스테이지 증가
+            player.hp = 100 + stage * 10; // 다음 스테이지를 위한 플레이어 회복
+        }
     }
     console.clear();
     console.log(chalk.cyanBright('축하합니다! 모든 스테이지를 클리어했습니다.'));
@@ -220,7 +230,7 @@ export async function startGame() {
             `\n1. 종료한다 2. 로비로 돌아간다`,
         ),
     );
-    process.stdout.write('당신의 선택은? : ');
+    process.stdout.write('당신의 선택은?: ');
     const choice = readlineSync.question(); // 사용자가 입력한 값을 받음
     if (choice === '1') {
         console.log(chalk.red('다음에 또 만나요.'));
@@ -231,3 +241,4 @@ export async function startGame() {
         handleUserInput();
     }
 }
+
